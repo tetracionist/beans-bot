@@ -1,9 +1,14 @@
-import logging
+import logging, os
+
 # create logger with 'spam_application'
 logger = logging.getLogger('beans-bot')
 logger.setLevel(logging.DEBUG)
+
+log_filename = "logs/beans-bot.log"
+os.makedirs(os.path.dirname(log_filename), exist_ok=True)
+
 # create file handler which logs even debug messages
-fh = logging.FileHandler('beans-bot.log')
+fh = logging.FileHandler(log_filename)
 fh.setLevel(logging.DEBUG)
 # create console handler with a higher log level
 ch = logging.StreamHandler()
