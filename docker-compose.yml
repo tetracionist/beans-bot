@@ -1,0 +1,7 @@
+version: "3.9"
+services:
+  beans-service:
+    build: .
+    volumes:
+      - /data/discord-bots/beans-bot/logs:/discord-bots/beans-bot/logs
+    restart: always
