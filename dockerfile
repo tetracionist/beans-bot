@@ -6,7 +6,8 @@ WORKDIR /discord-bots/beans-bot
 RUN python -m venv /opt/venv
 
 COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt
+RUN /opt/venv/bin/pip install -r requirements.txt
+RUN apt-get install ffmpeg
 
 COPY . .
 
