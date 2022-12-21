@@ -3,6 +3,8 @@ LABEL Maintainer='Tetracionist'
 
 WORKDIR /discord-bots/beans-bot
 
+RUN python -m venv /opt/venv
+
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
