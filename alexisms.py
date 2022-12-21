@@ -6,6 +6,11 @@ phrases = {'alex': ['what do you mean', 'blimey', 'lemons'],
            'donkey': ['Shit on it', 'Donkey'],
            'bugger it': ['*slaps thigh*', '*pours whisky*'],
            'cognizant': "There's a reason I don't work for the big four",
-           'aiimi': ['Llamas in a field of sheep', 'ooooooooooh, connecting people to insight']}
+           'aiimi': ['Llamas in a field of sheep', 'ooooooooooh, connecting people to insight'],
+           'trigger': ['*Explodes*', 'Trigger Warning'],
+           'tea': ["Smashed a fucking mug"],
+           'nine': ['NIIIINE', 'Nine', '9'], 
+           '9': ['NIIIINE', 'Nine', '9'], 
+           'paper': "<@149666799321874434> I've run out of paper"}
            
 
