@@ -1,14 +1,16 @@
 import discord, core.alexisms, random as rand
 
-class beansBot():
-    def __init__(self: object, token: str, intents: object, commands: dict, prefix='!bb'):
+class beansBot:
+    def __init__(self: object, token: str, intents: object, prefix='!bb'):
         self.token = token
         self.intents = intents
         self.client = discord.Client(intents=intents)
         self.prefix = prefix
 
         # define commands 
-        self.commands = commands
+        self.commands = {"ping": core.commands.PingCommand(self),
+                         "target": core.commands.TargetCommand(self)}
+        
             
     
     def start(self):
@@ -24,7 +26,19 @@ class beansBot():
 
             # check if the message is a command
             if message.content.startswith(self.prefix):
-                print("commad")
+                # Split the message into the command and its arguments
+                parts = message.content.split()[1:]
+                command = parts[0]
+                args  = parts[1:]
+
+                # find the command in the parts array
+                command_obj = [val for key, val in self.commands.items() if command in key]
+
+                if command_obj:
+                    await command_obj[0].execute(message, args)
+                 
+
+
 
             # if message is not a command then check if it matches a trigger word in alexisms
             else:
