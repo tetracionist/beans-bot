@@ -6,6 +6,7 @@ class beansBot:
         self.intents = intents
         self.client = discord.Client(intents=intents)
         self.prefix = prefix
+        self.target_dict = {}
 
         # define commands 
         self.commands = {"ping": core.commands.PingCommand(self),
@@ -22,7 +23,7 @@ class beansBot:
         @self.client.event
         async def on_message(message):
 
-            print(message)
+            #print(message)
 
             # check if the message is a command
             if message.content.startswith(self.prefix):
@@ -36,7 +37,8 @@ class beansBot:
 
                 if command_obj:
                     await command_obj[0].execute(message, args)
-                 
+            
+                print(self.target_dict)
 
 
 

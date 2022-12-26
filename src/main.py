@@ -3,7 +3,7 @@ from core.commands import Command
 from discord import Intents
 from core import logs, alexisms
 from dotenv import load_dotenv
-import os, random
+import os, random, re
 
 
 if __name__ == '__main__':

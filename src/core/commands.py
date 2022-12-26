@@ -1,3 +1,4 @@
+import re
 class Command:
     def __init__(self, bot, name, description):
         self.bot = bot
@@ -23,15 +24,22 @@ class TargetCommand(Command):
 
         # this needs to be done on a guild by guild basis
         # think about how we might store this data
-
-        # find user ids in the args
-
-
+        users = [int(''.join(re.findall(r'[0-9]', arg)).strip()) for arg in args]
+        
         # first check if user is in guild
         guild = self.bot.client.get_guild(message.guild.id)
         guild_members = [guild_member.id for guild_member in guild.members]
-        targets = [arg for arg in args if arg in guild_members]
+        targets = [arg for arg in users if arg in guild_members]
 
+        if not targets:
+            await message.channel.send('Target is not in this server')
+            return
+        
+        self.bot.target_dict[guild.id] = targets
+        print(self.bot.target_dict)
+        
 
-
-        print(targets)
+        for target in targets:
+            user = self.bot.client.get_user(target)
+            
+            await user.send('Get Rekt')
