@@ -9,7 +9,8 @@ COPY requirements.txt requirements.txt
 RUN /opt/venv/bin/pip install -r requirements.txt
 RUN apt-get install ffmpeg
 
-COPY . .
+COPY src/ .
+COPY .env .
 
 RUN adduser -u 5678 --disabled-password --gecos "" botuser && chown -R botuser /discord-bots/beans-bot
 USER botuser
