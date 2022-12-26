@@ -15,4 +15,4 @@ COPY .env .
 RUN adduser -u 5678 --disabled-password --gecos "" botuser && chown -R botuser /discord-bots/beans-bot
 USER botuser
 
-CMD ["python", "beans.py"]
+CMD ["python", "main.py"]
