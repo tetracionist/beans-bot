@@ -3,11 +3,15 @@ LABEL Maintainer='Tetracionist'
 
 WORKDIR /discord-bots/beans-bot
 
+RUN apt-get -y update
+RUN apt-get -y upgrade
+RUN apt-get install -y ffmpeg
+
 RUN python -m venv /opt/venv
 
 COPY requirements.txt requirements.txt
 RUN /opt/venv/bin/pip install -r requirements.txt
-RUN apt-get install ffmpeg
+
 
 COPY src/ .
 COPY .env .
