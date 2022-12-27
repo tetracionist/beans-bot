@@ -1,7 +1,7 @@
 from core.beansBot import beansBot
 from core.commands import Command
 from discord import Intents
-from core import logs, alexisms
+from core import alexisms
 import os, random, re
 
 
