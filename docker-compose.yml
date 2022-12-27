@@ -3,7 +3,7 @@ services:
   beans-service:
     image: tetracionist/beans-bot:latest
     env_file:
-    - .env
+      - .env
     volumes:
       - /data/discord-bots/beans-bot/logs:/discord-bots/beans-bot/logs
     restart: always
