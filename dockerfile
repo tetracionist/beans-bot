@@ -7,14 +7,15 @@ RUN apt-get -y update
 RUN apt-get -y upgrade
 RUN apt-get install -y ffmpeg
 
-RUN python -m venv /opt/venv
+ENV VIRTUAL_ENV=/opt/venv
+RUN python -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 COPY requirements.txt requirements.txt
-RUN /opt/venv/bin/pip install -r requirements.txt
+RUN pip install -r requirements.txt
 
 
 COPY src/ .
-COPY .env .
 
 RUN adduser -u 5678 --disabled-password --gecos "" botuser && chown -R botuser /discord-bots/beans-bot
 USER botuser
