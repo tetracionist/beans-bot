@@ -14,7 +14,6 @@ RUN /opt/venv/bin/pip install -r requirements.txt
 
 
 COPY src/ .
-COPY .env .
 
 RUN adduser -u 5678 --disabled-password --gecos "" botuser && chown -R botuser /discord-bots/beans-bot
 USER botuser
