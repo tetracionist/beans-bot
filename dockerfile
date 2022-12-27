@@ -3,15 +3,16 @@ LABEL Maintainer='Tetracionist'
 
 WORKDIR /discord-bots/beans-bot
 
-RUN python -m venv /opt/venv
+COPY src/ .
 
-COPY requirements.txt requirements.txt
-RUN /opt/venv/bin/pip install -r requirements.txt
-RUN apt-get install ffmpeg
-
-COPY . .
+RUN apt-get -y update
+RUN apt-get -y upgrade
+RUN apt-get install -y ffmpeg
 
 RUN adduser -u 5678 --disabled-password --gecos "" botuser && chown -R botuser /discord-bots/beans-bot
 USER botuser
 
-CMD ["python", "beans.py"]
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+
+CMD ["python", "main.py"]
