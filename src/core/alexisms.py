@@ -12,4 +12,5 @@ phrases = {'alex': ['what do you mean', 'blimey', 'lemons'],
            'nine': ['NIIIINE', 'Nine', '9'],
            '9': ['NIIIINE', 'Nine', '9'],
            'paper': "<@149666799321874434> I've run out of paper",
-           'taylor swift': '*play I knew you were trouble'}
+           'taylor swift': '*play I knew you were trouble',
+           'Hi': ["Hiiiiiii, I'm Stoaga"]}
