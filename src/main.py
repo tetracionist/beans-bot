@@ -5,10 +5,10 @@ from discord import Intents
 from dotenv import load_dotenv
 
 if __name__ == '__main__':
-    logs.logger.info('Beans Bot Starting...')
-
     load_dotenv()
     token = os.getenv('TOKEN')
+
+    logs.logger.info('Beans Bot Starting...')
 
     intents = Intents.default()
     intents.message_content = True

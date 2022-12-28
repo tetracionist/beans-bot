@@ -1,18 +1,14 @@
 import logging
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 # create logger with 'spam_application'
 logger = logging.getLogger('beans-bot')
 logger.setLevel(logging.DEBUG)
 
-
-log_path = os.path.abspath(
-    os.path.join(
-        os.path.dirname(__file__), '..', 'logs'
-    )
-).replace("\\", "/")
-
-log_filename = f"{log_path}/beans-bot.log"
+log_dir = os.getenv('LOG_DIR')
+log_filename = f"{log_dir}/beans-bot.log"
 os.makedirs(os.path.dirname(log_filename), exist_ok=True)
 
 # create file handler which logs even debug messages
