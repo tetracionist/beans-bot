@@ -1,12 +1,10 @@
-from core.beansBot import beansBot
-from core.commands import Command
+import logs
+import os
+from core.beans_bot import beans_bot
 from discord import Intents
-from core import alexisms
-import os, random, re, logs
 from dotenv import load_dotenv
 
 if __name__ == '__main__':
-    
     logs.logger.info('Beans Bot Starting...')
 
     load_dotenv()
@@ -16,5 +14,5 @@ if __name__ == '__main__':
     intents.message_content = True
     intents.members = True
 
-    bot = beansBot(token, intents)
+    bot = beans_bot(token, intents)
     bot.start()
