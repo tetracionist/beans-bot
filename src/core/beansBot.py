@@ -1,4 +1,5 @@
-import discord, core.alexisms, random as rand
+import discord, random as rand 
+import core.alexisms, core.voice
 import logs
 
 class beansBot:
@@ -13,12 +14,26 @@ class beansBot:
         self.commands = {"ping": core.commands.PingCommand(self),
                          "target": core.commands.TargetCommand(self)}
         
+        
+        
             
     
     def start(self):
         @self.client.event
         async def on_ready():
             logs.logger.info('Log In Successful')
+
+        @self.client.event
+        async def on_voice_state_update(member, before, after):
+            
+            # get channel
+            channel = after.channel
+
+            vc = core.voice.voice.check_voice_clients(self, channel.guild)
+            if vc == None:
+                await channel.connect()
+
+            
         
         @self.client.event
         async def on_message(message):
