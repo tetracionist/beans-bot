@@ -1,7 +1,5 @@
 import logging
 import os
-from dotenv import load_dotenv
-load_dotenv()
 
 # create logger with 'spam_application'
 logger = logging.getLogger('beans-bot')
