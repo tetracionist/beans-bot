@@ -1,4 +1,4 @@
-import discord
+import discord, logs
 class voice:
     def __init__(self, bot) -> None:
         self.bot = bot
@@ -16,7 +16,7 @@ class voice:
             
             # check if there is an existing voice connection
             if check_voice_client(self, after.guild):
-                print("voice_client for guild exists")
+                logs.logger.info(f'voice client exists')
             else:
                 await channel.connect()
 

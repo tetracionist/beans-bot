@@ -1,4 +1,5 @@
 import discord, core.alexisms, random as rand
+import logs
 
 class beansBot:
     def __init__(self: object, token: str, intents: object, prefix='!bb'):
@@ -17,8 +18,7 @@ class beansBot:
     def start(self):
         @self.client.event
         async def on_ready():
-            print("ready")
-        
+            logs.logger.info('Log In Successful')
         
         @self.client.event
         async def on_message(message):
@@ -38,7 +38,7 @@ class beansBot:
                 if command_obj:
                     await command_obj[0].execute(message, args)
             
-                print(self.target_dict)
+                logs.logger.info(f'targets: {self.target_dict}')
 
 
 

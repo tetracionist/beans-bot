@@ -36,7 +36,6 @@ class TargetCommand(Command):
             return
         
         self.bot.target_dict[guild.id] = targets
-        print(self.bot.target_dict)
         
 
         for target in targets:
