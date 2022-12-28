@@ -4,6 +4,8 @@ import core.alexisms
 import core.voice
 import core.commands
 import logs
+import os
+import asyncio
 
 
 class beans_bot:
@@ -25,10 +27,66 @@ class beans_bot:
 
         @self.client.event
         async def on_voice_state_update(member, before, after):
-            channel = after.channel
-            vc = core.voice.voice.check_voice_clients(self, channel.guild)
-            if vc is None:
-                await channel.connect()
+
+            if member.bot:
+                return
+
+            resources_path = os.path.abspath(
+                                    os.path.join(
+                                        os.path.dirname(__file__), '..',
+                                        'resources'
+                                    )
+                                ).replace("\\", "/")
+
+            mp3_file = resources_path + '/beans.mp3'
+            audio_source = discord.FFmpegPCMAudio(mp3_file)
+
+            # if the target is empty then join the voice channel when any user
+            # joins the voice channel
+            # only disconnect if voice channel contains beans bot
+
+            # if the target is not empty then join voice channel
+            # if any of the target users join the voice channel
+            # if they are speaking play the mp3 file
+            # if all targets disconnect then disconnect
+
+            channel = await self.client.fetch_channel(after.channel.id)
+
+            if self.target_dict:
+                if member.id in self.target_dict[channel.guild.id]:
+                    guild = channel.guild
+                    vc = core.voice.voice.check_voice_clients(self, guild)
+
+                if vc is None:
+                    await channel.connect()
+                    vc = self.client.voice_clients[0]
+
+                if before.channel != after.channel and after.channel:
+                    await vc.move_to(after.channel)
+
+                if not after.mute:
+                    while True:
+                        audio_source = discord.FFmpegPCMAudio(mp3_file)
+                        vc.play(audio_source, after=None)
+                        while vc.is_playing():
+                            await asyncio.sleep(1)
+                        
+
+            else:
+
+                vc = core.voice.voice.check_voice_clients(self, channel.guild)
+
+                if vc is None:
+                    await channel.connect()
+                    vc = self.client.voice_clients[0]
+
+                if before.channel != after.channel and after.channel:
+                    await vc.move_to(after.channel)
+
+                if vc.is_playing():
+                    vc.stop()
+
+                vc.play(audio_source, after=None)
 
         @self.client.event
         async def on_message(message):

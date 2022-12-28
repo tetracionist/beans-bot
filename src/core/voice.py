@@ -3,9 +3,9 @@ class voice:
         self.bot = bot
 
     def check_voice_clients(self, guild):
-        voice_clients = self.client.voice_clients
-        if voice_clients:
-            for vc in voice_clients:
-                if vc.guild.id == guild.id:
-                    return vc
-        return None
+        voice_client = [vc for vc in self.client.voice_clients
+                        if vc.guild.id == guild.id]
+        if voice_client:
+            return voice_client[0]
+        else:
+            return None

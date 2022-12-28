@@ -21,10 +21,6 @@ class target_command(command):
         super().__init__(bot, 'target', 'Chooses a guild member to target')
 
     async def execute(self, message, args):
-
-        if 'clear' in args:
-            return
-
         # this needs to be done on a guild by guild basis
         # think about how we might store this data
         users = [int(''.join(re.findall(r'[0-9]', arg)).strip())
@@ -34,6 +30,10 @@ class target_command(command):
         guild = self.bot.client.get_guild(message.guild.id)
         guild_members = [guild_member.id for guild_member in guild.members]
         targets = [arg for arg in users if arg in guild_members]
+
+        if 'clear' in args:
+            self.bot.target_dict.pop(guild.id, None)
+            return
 
         if not targets:
             await message.channel.send('Target is not in this server')
