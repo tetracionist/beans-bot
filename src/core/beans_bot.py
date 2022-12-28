@@ -18,7 +18,9 @@ class beans_bot:
 
         # define commands
         self.commands = {"ping": core.commands.ping_command(self),
-                         "target": core.commands.target_command(self)}
+                         "target": core.commands.target_command(self),
+                         "speak": core.commands.speak_command(self),
+                         "say": core.commands.say_command(self)}
 
     def start(self):
         @self.client.event
@@ -70,10 +72,8 @@ class beans_bot:
                         vc.play(audio_source, after=None)
                         while vc.is_playing():
                             await asyncio.sleep(1)
-                        
 
             else:
-
                 vc = core.voice.voice.check_voice_clients(self, channel.guild)
 
                 if vc is None:

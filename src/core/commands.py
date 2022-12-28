@@ -1,4 +1,10 @@
 import re
+import os
+import discord
+from core.voice import voice
+import core.alexisms
+import asyncio
+import random as rand
 
 
 class command:
@@ -14,6 +20,59 @@ class ping_command(command):
 
     async def execute(self, message, args):
         await message.channel.send('Pong!')
+
+
+class say_command(command):
+    def __init__(self, bot):
+        super().__init__(bot, 'say', 'sends message to text channel')
+    
+    async def execute(self, message, args):
+        # send a random alexism
+        if args[0] == 'alexism':
+            random_alexism = rand.choice(list(core.alexisms.phrases.values()))
+
+            if isinstance(random_alexism, list):
+                await message.channel.send(rand.choice(random_alexism))
+
+            elif isinstance(random_alexism, str):
+                await message.channel.send(random_alexism)
+
+
+class speak_command(command):
+    def __init__(self, bot):
+        super().__init__(bot, 'speak', 'speaks in voice')
+
+    async def execute(self, message, args):
+
+        resources_path = os.path.abspath(
+                                    os.path.join(
+                                        os.path.dirname(__file__), '..',
+                                        'resources'
+                                    )
+                                ).replace("\\", "/")
+        for arg in args:
+            mp3_file = resources_path + '/'+arg+'.mp3'
+            audio_source = discord.FFmpegPCMAudio(mp3_file)
+
+            # check for voice client in guild
+            vc = voice.check_voice_clients(self.bot, message.guild)
+            member = message.author
+            member_voice_state = member.voice
+
+            # connect to the same channel as the member and say beans
+            if vc is None:
+                await member_voice_state.channel.connect()
+                vc = self.bot.client.voice_clients[0]
+
+            # otherwise move_to the channel
+            else:
+                await vc.move_to(member_voice_state.channel)
+
+            # play beans
+            while vc.is_playing():
+                await asyncio.sleep(1)
+
+            vc.play(audio_source, after=None)
 
 
 class target_command(command):
