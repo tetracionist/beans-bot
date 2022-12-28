@@ -44,35 +44,50 @@ class speak_command(command):
 
     async def execute(self, message, args):
 
+        # check for voice client in guild
+        vc = voice.check_voice_clients(self.bot, message.guild)
+        member = message.author
+        member_voice_state = member.voice
+
+        # connect to the same channel as the member and say beans
+        if vc is None:
+            await member_voice_state.channel.connect()
+            vc = self.bot.client.voice_clients[0]
+
+        # otherwise move_to the channel
+        else:
+            await vc.move_to(member_voice_state.channel)
+
         resources_path = os.path.abspath(
                                     os.path.join(
                                         os.path.dirname(__file__), '..',
                                         'resources'
                                     )
                                 ).replace("\\", "/")
-        for arg in args:
-            mp3_file = resources_path + '/'+arg+'.mp3'
+
+        if args[0] == 'alexism':
+            # choose a random alexism for the folder
+            alexism_dir = f"{resources_path}/alexisms"
+            alexism_file = rand.choice(os.listdir(alexism_dir))
+
+            mp3_file = f"{alexism_dir}/{alexism_file}"
             audio_source = discord.FFmpegPCMAudio(mp3_file)
-
-            # check for voice client in guild
-            vc = voice.check_voice_clients(self.bot, message.guild)
-            member = message.author
-            member_voice_state = member.voice
-
-            # connect to the same channel as the member and say beans
-            if vc is None:
-                await member_voice_state.channel.connect()
-                vc = self.bot.client.voice_clients[0]
-
-            # otherwise move_to the channel
-            else:
-                await vc.move_to(member_voice_state.channel)
-
             # play beans
             while vc.is_playing():
                 await asyncio.sleep(1)
 
             vc.play(audio_source, after=None)
+        
+        else:
+            for arg in args:
+                mp3_file = resources_path + '/'+arg+'.mp3'
+                audio_source = discord.FFmpegPCMAudio(mp3_file)
+            
+                # play beans
+                while vc.is_playing():
+                    await asyncio.sleep(1)
+
+                vc.play(audio_source, after=None)
 
 
 class target_command(command):
