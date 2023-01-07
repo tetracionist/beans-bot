@@ -20,7 +20,8 @@ class beans_bot:
         self.commands = {"ping": core.commands.ping_command(self),
                          "target": core.commands.target_command(self),
                          "speak": core.commands.speak_command(self),
-                         "say": core.commands.say_command(self)}
+                         "say": core.commands.say_command(self),
+                         "do_maths": core.commands.do_maths_command(self)}
 
     def start(self):
         @self.client.event
