@@ -2,10 +2,10 @@ import logs
 import os
 from core.beansbot import beans_bot
 from discord import Intents
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 
 if __name__ == '__main__':
-    # load_dotenv()
+    load_dotenv()
     token = os.getenv('TOKEN')
 
     logs.logger.info('Beans Bot Starting...')

@@ -54,34 +54,34 @@ class beans_bot:
             # if all targets disconnect then disconnect
 
             channel = await self.client.fetch_channel(after.channel.id)
+            guild = channel.guild
+            vc = core.voice.voice.check_voice_clients(self, guild)
 
-            if self.target_dict:
+            if self.target_dict.get(channel.guild.id) is not None:
                 if member.id in self.target_dict[channel.guild.id]:
-                    guild = channel.guild
-                    vc = core.voice.voice.check_voice_clients(self, guild)
+                    if vc is None:
+                        await channel.connect()
+                        vc = self.client.voice_clients[0]
 
-                if vc is None:
-                    await channel.connect()
-                    vc = self.client.voice_clients[0]
+                    elif before.channel != after.channel and after.channel:
+                        await vc.move_to(after.channel)
 
-                if before.channel != after.channel and after.channel:
-                    await vc.move_to(after.channel)
-
-                if not after.mute:
-                    while True:
-                        audio_source = discord.FFmpegPCMAudio(mp3_file)
-                        vc.play(audio_source, after=None)
-                        while vc.is_playing():
-                            await asyncio.sleep(1)
+                    if not after.mute:
+                        # in the event that the user clears targets it removes
+                        # the key
+                        while self.target_dict.get(channel.guild.id) is not None:
+                            audio_source = discord.FFmpegPCMAudio(mp3_file)
+                            vc.play(audio_source, after=None)
+                            while vc.is_playing():
+                                await asyncio.sleep(1)
 
             else:
-                vc = core.voice.voice.check_voice_clients(self, channel.guild)
 
                 if vc is None:
                     await channel.connect()
                     vc = self.client.voice_clients[0]
 
-                if before.channel != after.channel and after.channel:
+                elif before.channel != after.channel and after.channel:
                     await vc.move_to(after.channel)
 
                 if vc.is_playing():

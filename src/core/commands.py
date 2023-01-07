@@ -108,6 +108,11 @@ class target_command(command):
     async def execute(self, message, args):
         guild = self.bot.client.get_guild(message.guild.id)
         if 'show' in args:
+
+            if self.bot.target_dict.get(guild.id) is None:
+                await message.channel.send("There are no active targets")
+                return
+
             guild_targets = self.bot.target_dict[guild.id]
 
             await message.channel.send("Targeting:")
