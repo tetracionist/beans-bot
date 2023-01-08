@@ -9,3 +9,9 @@ class voice:
             return voice_client[0]
         else:
             return None
+
+    def speak_beans(self, vc, audio_source):
+        if vc.is_playing():
+            vc.stop()
+
+        vc.play(audio_source, after=None)

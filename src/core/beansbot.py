@@ -30,7 +30,8 @@ class beans_bot:
 
         @self.client.event
         async def on_voice_state_update(member, before, after):
-
+            
+            # ignore movements from bots 
             if member.bot:
                 return
 
@@ -44,51 +45,40 @@ class beans_bot:
             mp3_file = resources_path + '/beans.mp3'
             audio_source = discord.FFmpegPCMAudio(mp3_file)
 
-            # if the target is empty then join the voice channel when any user
-            # joins the voice channel
-            # only disconnect if voice channel contains beans bot
+            # user has either joined channel or moved from one channel to another
+            if before.channel != after.channel and after.channel: 
 
-            # if the target is not empty then join voice channel
-            # if any of the target users join the voice channel
-            # if they are speaking play the mp3 file
-            # if all targets disconnect then disconnect
+                # check if bot is connected 
+                channel = await self.client.fetch_channel(after.channel.id)
+                guild = channel.guild
+                vc = core.voice.voice.check_voice_clients(self, guild)
 
-            channel = await self.client.fetch_channel(after.channel.id)
-            guild = channel.guild
-            vc = core.voice.voice.check_voice_clients(self, guild)
+                # check if targets exist for this guild
+                # only connect if the target is connected to the voice channel
+                if self.target_dict.get(channel.guild.id) is not None:
+                    return
 
-            if self.target_dict.get(channel.guild.id) is not None:
-                if member.id in self.target_dict[channel.guild.id]:
-                    if vc is None:
-                        await channel.connect()
-                        vc = self.client.voice_clients[0]
-
-                    elif before.channel != after.channel and after.channel:
-                        await vc.move_to(after.channel)
-
-                    if not after.mute:
-                        # in the event that the user clears targets it removes
-                        # the key
-                        while self.target_dict.get(channel.guild.id) is not None:
-                            audio_source = discord.FFmpegPCMAudio(mp3_file)
-                            vc.play(audio_source, after=None)
-                            while vc.is_playing():
-                                await asyncio.sleep(1)
-
-            else:
-
+                # if no targets exist for this guild then join if any user joins
                 if vc is None:
                     await channel.connect()
                     vc = self.client.voice_clients[0]
-
-                elif before.channel != after.channel and after.channel:
+                else:
                     await vc.move_to(after.channel)
+                
+                # play the audio file
+                core.voice.voice.speak_beans(self, vc, audio_source)
 
-                if vc.is_playing():
-                    vc.stop()
-
-                vc.play(audio_source, after=None)
-
+            # user has left the channel
+            elif before.channel != after.channel and after.channel is None:
+                # check if the bot is the only user in the channel
+                channel = await self.client.fetch_channel(before.channel.id)
+                guild = channel.guild
+                vc = core.voice.voice.check_voice_clients(self, guild)
+                if vc is not None:
+                    bot_list = list(set([member.bot for member in channel.members]))
+                    if False not in bot_list:
+                        await vc.disconnect()
+           
         @self.client.event
         async def on_message(message):
             # check if the message is a command
