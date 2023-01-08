@@ -6,4 +6,5 @@ services:
       - .env
     volumes:
       - /data/discord-bots/beans-bot/logs:/discord-bots/beans-bot/logs
+      - /data/discord-bots/beans-bot/resources:/discord-bots/beans-bot/resources
     restart: always

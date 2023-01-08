@@ -5,6 +5,7 @@ from core.voice import voice
 import core.alexisms
 import asyncio
 import random as rand
+from sympy import parse_expr, simplify
 
 
 class command:
@@ -25,7 +26,7 @@ class ping_command(command):
 class say_command(command):
     def __init__(self, bot):
         super().__init__(bot, 'say', 'sends message to text channel')
-    
+
     async def execute(self, message, args):
         # send a random alexism
         if args[0] == 'alexism':
@@ -77,12 +78,12 @@ class speak_command(command):
                 await asyncio.sleep(1)
 
             vc.play(audio_source, after=None)
-        
+
         else:
             for arg in args:
                 mp3_file = resources_path + '/'+arg+'.mp3'
                 audio_source = discord.FFmpegPCMAudio(mp3_file)
-            
+
                 # play beans
                 while vc.is_playing():
                     await asyncio.sleep(1)
@@ -90,24 +91,50 @@ class speak_command(command):
                 vc.play(audio_source, after=None)
 
 
+class do_maths_command(command):
+    def __init__(self, bot):
+        super().__init__(bot, 'do_maths', 'Does mathematical calculation')
+
+    async def execute(self, message, args):
+        await message.channel.send("_I'm Doing Maaaaaths!_")
+        expr = parse_expr(' '.join(args))
+        await message.channel.send(simplify(expr))
+
+
 class target_command(command):
     def __init__(self, bot):
         super().__init__(bot, 'target', 'Chooses a guild member to target')
 
     async def execute(self, message, args):
+        guild = self.bot.client.get_guild(message.guild.id)
+        if 'show' in args:
+
+            if self.bot.target_dict.get(guild.id) is None:
+                await message.channel.send("There are no active targets")
+                return
+
+            guild_targets = self.bot.target_dict[guild.id]
+
+            await message.channel.send("Targeting:")
+            for guild_member in guild_targets:
+                await message.channel.send(
+                    self.bot.client.get_user(guild_member).mention
+                )
+            return
+
+        if 'clear' in args:
+            self.bot.target_dict.pop(guild.id, None)
+            await message.channel.send(f'Cleared targets for {guild.name}')
+            return
+
         # this needs to be done on a guild by guild basis
         # think about how we might store this data
         users = [int(''.join(re.findall(r'[0-9]', arg)).strip())
                  for arg in args]
 
         # first check if user is in guild
-        guild = self.bot.client.get_guild(message.guild.id)
         guild_members = [guild_member.id for guild_member in guild.members]
         targets = [arg for arg in users if arg in guild_members]
-
-        if 'clear' in args:
-            self.bot.target_dict.pop(guild.id, None)
-            return
 
         if not targets:
             await message.channel.send('Target is not in this server')
