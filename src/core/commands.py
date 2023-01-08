@@ -5,7 +5,7 @@ from core.voice import voice
 import core.alexisms
 import asyncio
 import random as rand
-from sympy import parse_expr, simplify
+from sympy import parse_expr, simplify, expand, integrate
 
 
 class command:
@@ -97,8 +97,17 @@ class do_maths_command(command):
 
     async def execute(self, message, args):
         await message.channel.send("_I'm Doing Maaaaaths!_")
-        expr = parse_expr(' '.join(args))
-        await message.channel.send(simplify(expr))
+        expr = parse_expr(' '.join(args[1:]))
+
+        match args[0]:
+            case 'expand':
+                op = expand(expr)
+            case 'integrate':
+                op = integrate(expr)
+            case _:
+                op = expr
+    
+        await message.channel.send(simplify(op))
 
 
 class target_command(command):
